@@ -3,7 +3,6 @@ package hcmute.edu.vn.caculator_08;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -15,72 +14,42 @@ public class MainActivity extends AppCompatActivity {
     private static String previous="";
     private static int cal =-1;
     private static boolean clear =false;
+    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //init textView widget
+        textView = (TextView) findViewById(R.id.txt_result);
         //Add list button of operand
         List<Button> listBtn = addBtn();
         for (Button btn:listBtn
              ) {
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addText((String) btn.getText());
-                }
-            });
+            btn.setOnClickListener(view -> addText((String) btn.getText()));
         }
         //Add list buttons of operation
         //clear number
         Button btnClear = findViewById(R.id.btn_clear);
-        btnClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearText();
-            }
-        });
+        btnClear.setOnClickListener(view -> clearText());
         //plus button
         Button btnSum =  findViewById(R.id.btn_plus);
-        btnSum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calbtn(0);
-            }
-        });
+        btnSum.setOnClickListener(view -> calbtn(0));
         //minus button
         Button btnSub =  findViewById(R.id.btn_minus);
-        btnSub.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calbtn(1);
-            }
-        });
+        btnSub.setOnClickListener(view -> calbtn(1));
         //multiply
         Button btnMul =  findViewById(R.id.btn_multiply);
-        btnMul.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calbtn(2);
-            }
-        });
+        btnMul.setOnClickListener(view -> calbtn(2));
         //devide
         Button btnDivide =  findViewById(R.id.btn_divide);
-        btnDivide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calbtn(3);
-            }
-        });
+        btnDivide.setOnClickListener(view -> calbtn(3));
         //equal button
         Button btnEqual =  findViewById(R.id.btn_equal);
-        btnEqual.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calbtn(-1);
-                texViewValue = "";
-                previous = "";
-                clear = true;
-            }
+        btnEqual.setOnClickListener(view -> {
+            calbtn(-1);
+            texViewValue = "";
+            previous = "";
+            clear = true;
         });
 
     }
@@ -96,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         Button btn7 =  findViewById(R.id.btn_number_seven);
         Button btn8 =  findViewById(R.id.btn_number_eight);
         Button btn9 =  findViewById(R.id.btn_number_nine);
-        //button 10 is btn_dot
-        Button btn10 =  findViewById(R.id.btn_dot);
+
+        Button btnDot =  findViewById(R.id.btn_dot);
 
         listBtn.add(btn0);
         listBtn.add(btn1);
@@ -109,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         listBtn.add(btn7);
         listBtn.add(btn8);
         listBtn.add(btn9);
-        listBtn.add(btn10);
+        listBtn.add(btnDot);
         return listBtn;
     }
 
@@ -121,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
             previous = texViewValue;
             texViewValue = "";
             clear = false;
+        }
+        if(texViewValue.length()==15){
+            return;
         }
         texViewValue += value;
         updateText();
@@ -135,10 +107,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateText(){
-        TextView textView = (TextView) findViewById(R.id.txt_result);
         textView.setText(texViewValue);
+        //set size text layout depend on length of textViewValue
+        int lengthOfText=texViewValue.length();
+        if(lengthOfText<=7){
+            textView.setTextSize(100);
+        }else if(lengthOfText<=10){
+            textView.setTextSize(70);
+        }else if(lengthOfText<=14){
+            textView.setTextSize(50);
+        }else if(lengthOfText<=30){
+            textView.setTextSize(40);
+        }
     }
-
+    /*mode 0 => Plus operator
+    * mode 1 => Minus operator
+    * mode 2 => Multiply operator
+    * mode 3 => Divide operator
+    * mode -1 => Not any mode operator above
+    * */
     private void calbtn(int mode){
         if(texViewValue.equals("")){
             updateText();
@@ -159,7 +146,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void printResult(){
-        double num1 = Double.parseDouble(previous);
+        double num1;
+        try{
+            num1 = Double.parseDouble(previous);
+        }catch (Exception e){
+            return;
+        }
         double num2 = Double.parseDouble(texViewValue);
         double result=0;
         switch (cal){
@@ -183,7 +175,8 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
-        texViewValue = String.valueOf(result);
-
+        //temporary value after format, format round 2
+        double t=Math.ceil(result * 100) / 100;
+        texViewValue = String.valueOf(t);
     }
 }
