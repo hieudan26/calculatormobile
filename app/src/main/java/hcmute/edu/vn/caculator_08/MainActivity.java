@@ -108,18 +108,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateText(){
         textView.setText(texViewValue);
+        //set size text layout depend on length of textViewValue
         int lengthOfText=texViewValue.length();
         if(lengthOfText<=7){
             textView.setTextSize(100);
-        }else if(lengthOfText>7&&lengthOfText<=10){
+        }else if(lengthOfText<=10){
             textView.setTextSize(70);
-        }else if(lengthOfText>10&&lengthOfText<=14){
+        }else if(lengthOfText<=14){
             textView.setTextSize(50);
-        }else if(lengthOfText>14&&lengthOfText<=30){
+        }else if(lengthOfText<=30){
             textView.setTextSize(40);
         }
     }
-
+    /*mode 0 => Plus operator
+    * mode 1 => Minus operator
+    * mode 2 => Multiply operator
+    * mode 3 => Divide operator
+    * mode -1 => Not any mode operator above
+    * */
     private void calbtn(int mode){
         if(texViewValue.equals("")){
             updateText();
@@ -169,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
-        //temporary value after format
+        //temporary value after format, format round 2
         double t=Math.ceil(result * 100) / 100;
         texViewValue = String.valueOf(t);
     }
