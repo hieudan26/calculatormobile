@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
             textView.setTextSize(50);
         }else if(lengthOfText<=30){
             textView.setTextSize(40);
+        }else{
+            textView.setTextSize(20);
         }
     }
     /*mode 0 => Plus operator
